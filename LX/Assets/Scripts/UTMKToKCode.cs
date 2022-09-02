@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -35,27 +33,52 @@ public class UTMKToKCode : MonoBehaviour
             {19, "사"},
             {20, "아"},
         };
-
+        // 100km = 100000m
         ConvertToKcode(1387599.176629074, 1924687.6551367077);
     }
     
-    // 
-    private void ConvertToKcode(double width, double height)
+    // UTM-K width와 height를 입력하면, 국가 지정 좌표로 변환하여 출력하는 로직
+    public void ConvertToKcode(double width, double height)
     {
         string firstKCode;
         string secondKcode;
 
+        int firstNumber = (int)width / 100000;
+        int secondNumber = (int) height / 100000;
+
+        if (firstNumber >= 7 && firstNumber <= 13)
+        {
+            firstKCode = widthDictionary[firstNumber];
+        }
+        else
+        {
+            Debug.LogError("국가지점번호의 입력 범위가 아닙니다.");
+            return;
+        }
+
+        if (secondNumber >= 13 && secondNumber <= 20)
+        {
+            secondKcode = heightDictionary[secondNumber];
+        }
+        else
+        {
+            Debug.LogError("국가지점번호의 입력 범위가 아닙니다.");
+            return;
+        }
         int wp = (int)((width % 100000) / 10);
         int hp = (int)((height % 100000) / 10);
 
-        int firstNumber = (int)width / 100000;
-        int secondeNumber = (int) height / 100000;
+        string kCode = firstKCode + " "+ secondKcode + " " + wp.ToString() + " " + hp.ToString();
+        // Debug.Log(kCode);
+    }
+    
+    // 사사 구역일 경우, 국가 지정 좌표로 변환
+    public void ConvertToKcodeInSaSa(double width, double height)
+    {
+        int wp = (int)((width % 100000) / 10);
+        int hp = (int)((height % 100000) / 10);
 
-        firstKCode = widthDictionary[firstNumber];
-        secondKcode = heightDictionary[secondeNumber];
-
-        string kCode = firstKCode + secondKcode;
-        
-        Debug.Log(kCode);
+        string kCode = "사" + " "+ "사" + " " + wp.ToString() + " " + hp.ToString();
+        // Debug.Log(kCode);
     }
 }
